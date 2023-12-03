@@ -3,7 +3,7 @@ create table `lines`
     id                   int(10) auto_increment
         primary key,
     api_id               varchar(255) not null,
-    api_destinationLabel varchar(255) not null,
+    api_destinationLabel varchar(255) null,
     constraint lines_pk
         unique (api_id, api_destinationLabel)
 );
