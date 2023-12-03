@@ -21,10 +21,14 @@ folder_path_imported = '/data/rnv_big-data_mining/data/line_monitoring/imported'
 # Ordner für fehlgeschlagene Dateien
 folder_path_failed = '/data/rnv_big-data_mining/data/line_monitoring/import_failed'
 
-# JSON-Datei laden
-f = open('/data/rnv_big-data_mining/data/general/line_monitoring_all_20231126172001_0.json')
-data  = json.load(f)
-f.close()
+now = datetime.now()
+
+with open('/data/rnv_big-data_mining/data/line_monitoring/import.log', 'a') as f:
+   f.write(f"\n \n")
+   f.write(f"{format(now.strftime('%Y-%m-%d_%H-%M-%S'))}\n")
+   f.write(f"filename; state; lines_total; journeys_total; stops_total; lines_new; journeys_new; stops_new; stops_updated\n")   
+   f.close()
+
 
 # Durch jede Datei im Ordner gehen
 for filename in os.listdir(folder_path_2beimported):
@@ -38,8 +42,18 @@ for filename in os.listdir(folder_path_2beimported):
             with open(file_path) as f:
                data = json.load(f)
 
+            # variables for debug information of lines, journeys and stops
+            debug_lines_total = 0
+            debug_journeys_total = 0
+            debug_stops_total = 0
+            debug_lines_new = 0
+            debug_journeys_new = 0
+            debug_stops_new = 0
+            debug_stops_updated = 0
+
             # Durch jede Linie in den Daten gehen
             for line in data['data']['lines']['elements']:
+               debug_lines_total += 1
                
                if len(line['journeys']['elements']) == 0:
                   cursor.execute("SELECT id FROM `lines` WHERE api_id = %s", (line['id']))
@@ -48,10 +62,12 @@ for filename in os.listdir(folder_path_2beimported):
                   if result is None:
                   # Wenn die Linie nicht existiert, erstellen Sie eine neue
                      cursor.execute("INSERT INTO `lines` (api_id) VALUES (%s)", (line['id']))
+                     debug_lines_new += 1
                
                else:
                      # Durch jede Reise in der Linie gehen
                      for journey in line['journeys']['elements']:
+                        debug_journeys_total += 1
                         # Überprüfen, ob die Linie bereits existiert
                         cursor.execute("SELECT id FROM `lines` WHERE (api_id = %s) AND (api_destinationLabel = %s)", (line['id'], journey['stops'][0]['destinationLabel']))
                         result = cursor.fetchone()
@@ -60,6 +76,7 @@ for filename in os.listdir(folder_path_2beimported):
                            # Wenn die Linie nicht existiert, erstellen Sie eine neue
                            cursor.execute("INSERT INTO `lines` (api_id, api_destinationLabel) VALUES (%s, %s)", (line['id'], journey['stops'][0]['destinationLabel']))
                            line_id = cursor.lastrowid
+                           debug_lines_new += 1
                         else:
                            # Wenn die Linie existiert, speichern Sie die ID
                            line_id = result[0]
@@ -71,6 +88,7 @@ for filename in os.listdir(folder_path_2beimported):
 
                         # Durch jeden Stopp in der Reise gehen
                         for stop in journey['stops']:
+                              debug_stops_total += 1
                               # Überprüfen, ob der Stopp bereits existiert
                               cursor.execute("SELECT id FROM stops WHERE (api_line = %s) AND (api_station = %s) AND (api_journey = %s)", (line_id, stop['station']['id'], journey_id))
                               result = cursor.fetchone()
@@ -89,14 +107,20 @@ for filename in os.listdir(folder_path_2beimported):
                               if result is None:
                                  # Wenn der Stopp nicht existiert, erstellen Sie einen neuen
                                  cursor.execute("INSERT INTO stops (api_line, api_station, api_journey, api_plannedDeparture, api_realtimeDeparture) VALUES (%s, %s, %s, FROM_UNIXTIME(%s), FROM_UNIXTIME(%s))", (line_id, stop['station']['id'], journey_id, pd, rd))
+                                 debug_stops_new += 1
                               else:
                                  # Wenn der Stopp existiert, aktualisieren Sie die Echtzeit-Abfahrt
                                  cursor.execute("UPDATE stops SET api_realtimeDeparture = FROM_UNIXTIME(%s) WHERE id = %s", (rd, result[0]))
+                                 debug_stops_updated += 1
 
             # Commit nach jeder Datei
             db.commit()
 
             shutil.move(file_path, os.path.join(folder_path_imported, filename))
+
+            # schreibe debug informationen in ein log file
+            with open('/data/rnv_big-data_mining/data/line_monitoring/import.log', 'a') as f:
+               f.write(f"{filename}; imported; {debug_lines_total}; {debug_journeys_total}; {debug_stops_total}; {debug_lines_new}; {debug_journeys_new}; {debug_stops_new}; {debug_stops_updated}\n")   
          
          except:
             # Wenn ein Fehler auftritt, verschieben Sie die Datei in den fehlgeschlagenen Ordner
@@ -106,6 +130,14 @@ for filename in os.listdir(folder_path_2beimported):
             f = open(os.path.join(folder_path_failed, filename + ".error"), "w")
             traceback.print_exc(file=f)
             f.close()
+
+            # Rollback nach jedem Fehler  
+            db.rollback()
+
+            # schreibe debug informationen in ein log file
+            with open('/data/rnv_big-data_mining/data/line_monitoring/import.log', 'a') as f:
+               f.write(f"{filename}; failed\n")            
+
 
 # Schließen Sie die Verbindung zur Datenbank
 db.close()
