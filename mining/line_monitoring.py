@@ -25,7 +25,7 @@ while cursor != "999-X" and cursor != "null":
    filename = 'line_monitoring_all_{}_'.format(now.strftime('%Y%m%d%H%M%S')) + cursor + '.json'
    
    # print(response.text)
-   with open('/data/rnv_big-data_mining/data/mined/' + filename, 'w') as f:
+   with open('/data/rnv_big-data_mining/data/line_monitoring/mined/' + filename, 'w') as f:
       f.write(response.text)
 
    cursor = json.loads(response.text)['data']['lines']['cursor']
