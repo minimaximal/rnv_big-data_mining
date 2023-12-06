@@ -6,6 +6,11 @@ from datetime import datetime, timezone
 import shutil
 
 
+def sorted_directory_listing_with_os_listdir(directory):
+    items = os.listdir(directory)
+    sorted_items = sorted(items)
+    return sorted_items
+
 """
 Imports line monitoring data from JSON files into a database.
 
@@ -18,6 +23,8 @@ Args:
 Returns:
    None
 """
+
+
 
 # connect to database
 db = pymysql.connect(host="localhost", user="rnv_importer", password="rnv_importer", database="rnv_big_data_mining")
@@ -43,14 +50,16 @@ with open('/data/rnv_big-data_mining/data/line_monitoring/import.log', 'a') as f
    f.close()
 
 # loop through every file in the folder
-for filename in os.listdir(folder_path_2beimported):
+for filename in sorted_directory_listing_with_os_listdir(folder_path_2beimported):
+   tempvar = ""
+
    # check if file is a json file
    if filename.endswith('.json'):
       # get the full path of the file
       file_path = os.path.join(folder_path_2beimported, filename)
 
       try:
-         # open the file
+            # open the file
          with open(file_path) as f:
             data = json.load(f)
 
@@ -71,40 +80,42 @@ for filename in os.listdir(folder_path_2beimported):
          for line in data['data']['lines']['elements']:
             debug_lines_total += 1
 
-            if len(line['journeys']['elements']) == 0:
-               cursor.execute("SELECT id FROM `lines` WHERE api_id = %s", (line['id']))
-               result = cursor.fetchone()
+            if line['journeys'] is not None:
 
-               if result is None:
-                  # if line does not exist, create a new one
-                  cursor.execute("INSERT INTO `lines` (api_id) VALUES (%s)", (line['id']))
-                  debug_lines_new += 1
-
-            else:
-               # loop through every journey in the line
-               for journey in line['journeys']['elements']:
-                  debug_journeys_total += 1
-                  # check if line exists
-                  cursor.execute("SELECT id FROM `lines` WHERE (api_id = %s) AND (api_destinationLabel = %s)", (line['id'], journey['stops'][0]['destinationLabel']))
+               if len(line['journeys']['elements']) == 0:
+                  cursor.execute("SELECT id FROM `lines` WHERE api_id = %s", (line['id']))
                   result = cursor.fetchone()
 
                   if result is None:
-                     # check if line exists without destinationLabel
-                     cursor.execute("SELECT id FROM `lines` WHERE api_id = %s AND api_destinationLabel IS NULL", (line['id']))
-                     result = cursor.fetchone()
-                     if result is not None:
-                        cursor.execute("UPDATE `lines` SET api_destinationLabel = %s WHERE id = %s", (journey['stops'][0]['destinationLabel'], result[0]))
-                        line_id = result[0]
-                        debug_lines_updated += 1
-                     else:
-                        # if line does not exist, create a new one
-                        cursor.execute("INSERT INTO `lines` (api_id, api_destinationLabel) VALUES (%s, %s)", (line['id'], journey['stops'][0]['destinationLabel']))
-                        line_id = cursor.lastrowid
-                        debug_lines_new += 1
+                     # if line does not exist, create a new one
+                     cursor.execute("INSERT INTO `lines` (api_id) VALUES (%s)", (line['id']))
+                     debug_lines_new += 1
 
-                  else:
-                     # if line exists, save the id
-                     line_id = result[0]
+               else:
+               # loop through every journey in the line
+                  for journey in line['journeys']['elements']:
+                     debug_journeys_total += 1
+                     # check if line exists
+                     cursor.execute("SELECT id FROM `lines` WHERE (api_id = %s) AND (api_destinationLabel = %s)", (line['id'], journey['stops'][0]['destinationLabel']))
+                     result = cursor.fetchone()
+
+                     if result is None:
+                        # check if line exists without destinationLabel
+                        cursor.execute("SELECT id FROM `lines` WHERE api_id = %s AND api_destinationLabel IS NULL", (line['id']))
+                        result = cursor.fetchone()
+                        if result is not None:
+                           cursor.execute("UPDATE `lines` SET api_destinationLabel = %s WHERE id = %s", (journey['stops'][0]['destinationLabel'], result[0]))
+                           line_id = result[0]
+                           debug_lines_updated += 1
+                        else:
+                           # if line does not exist, create a new one
+                           cursor.execute("INSERT INTO `lines` (api_id, api_destinationLabel) VALUES (%s, %s)", (line['id'], journey['stops'][0]['destinationLabel']))
+                           line_id = cursor.lastrowid
+                           debug_lines_new += 1
+
+                     else:
+                        # if line exists, save the id
+                        line_id = result[0]
 
                   # prepare fistStop_plannedDeparture
                   fistStop_plannedDeparture = int(datetime.fromisoformat(journey['stops'][0]['plannedDeparture']['isoString'].replace("Z", "+00:00")).replace(tzinfo=timezone.utc).timestamp())
@@ -131,21 +142,21 @@ for filename in os.listdir(folder_path_2beimported):
                   # loop through every stop in the journey
                   for stop in journey['stops']:
                      debug_stops_total += 1
-                     # check if stop exists
-                     cursor.execute("SELECT id FROM stops WHERE (api_line = %s) AND (api_station = %s) AND (api_journey = %s)", (line_id, stop['station']['id'], journey_id))
-                     result = cursor.fetchone()
 
-                     pd = stop['plannedDeparture']['isoString'] 
+                     pd = stop['plannedDeparture']['isoString']
                      rd = stop['realtimeDeparture']['isoString']
 
                      # prepare plannedDeparture and realtimeDeparture
-                     if pd is None:
-                        pd = None
-                     else: pd = int(datetime.fromisoformat(stop['plannedDeparture']['isoString'].replace("Z", "+00:00")).replace(tzinfo=timezone.utc).timestamp())
+                     if pd is not None:
+                        pd = int(datetime.fromisoformat(stop['plannedDeparture']['isoString'].replace("Z", "+00:00")).replace(tzinfo=timezone.utc).timestamp())
 
-                     if rd is None:
-                        rd = None
-                     else: rd = int(datetime.fromisoformat(stop['realtimeDeparture']['isoString'].replace("Z", "+00:00")).replace(tzinfo=timezone.utc).timestamp())
+                     if rd is not None:
+                        rd = int(datetime.fromisoformat(stop['realtimeDeparture']['isoString'].replace("Z", "+00:00")).replace(tzinfo=timezone.utc).timestamp())
+
+
+                     # check if stop exists
+                     cursor.execute("SELECT id FROM stops WHERE (api_line = %s) AND (api_station = %s) AND (api_journey = %s)", (line_id, stop['station']['id'], journey_id))
+                     result = cursor.fetchone()
 
                      if result is not None:
                         # check if realtimeDeparture has changed
@@ -155,6 +166,16 @@ for filename in os.listdir(folder_path_2beimported):
                            cursor.execute("UPDATE stops SET api_realtimeDeparture = FROM_UNIXTIME(%s) WHERE id = %s", (rd, result[0]))
                            debug_stops_updated += 1
                      else:
+                        tempvar = line_id, journey_id, stop['plannedDeparture']['isoString'], stop['realtimeDeparture']['isoString'], stop['station']['id']
+
+                        # check if station exists
+                        cursor.execute("SELECT api_hafasID FROM stations WHERE api_hafasID = %s", stop['station']['id'])
+                        result = cursor.fetchone()
+                        if result is None:
+                           # if station does not exist, create a new one   
+                           station_name = "!!! SONDER-STATION : " + str(stop['destinationLabel']) + " !!!"
+                           cursor.execute("INSERT INTO stations (api_id, api_hafasID, api_name, api_longName, api_location_lat, api_location_long, api_location_hash) VALUES (%s, %s, %s, %s, %s, %s, %s)", (stop['station']['id'], stop['station']['id'], station_name, station_name, 0, 0, "0"))
+
                         # if stop does not exist, create a new one
                         cursor.execute("INSERT INTO stops (api_line, api_station, api_journey, api_plannedDeparture, api_realtimeDeparture) VALUES (%s, %s, %s, FROM_UNIXTIME(%s), FROM_UNIXTIME(%s))", (line_id, stop['station']['id'], journey_id, pd, rd))
                         debug_stops_new += 1
@@ -182,7 +203,9 @@ for filename in os.listdir(folder_path_2beimported):
 
          # write debug information to log file
          with open('/data/rnv_big-data_mining/data/line_monitoring/import.log', 'a') as f:
-            f.write(f"{filename}; failed\n")            
+            f.write(f"{filename}; failed\n")   
+
+         print(tempvar)
 
 # close database connection
 db.close()

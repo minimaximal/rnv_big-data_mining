@@ -2,7 +2,7 @@ import json
 import pymysql
 
 # JSON-Daten laden
-f = open('/data/rnv_big-data_mining/data/general/stations_all_2023-12-03_13-42-30.json')
+f = open('/data/rnv_big-data_mining/data/general/stations_all_2023-12-06_18-12-33.json')
 data  = json.load(f)
 f.close()
 
@@ -37,3 +37,18 @@ db.commit()
 
 # Verbindung schließen
 db.close()
+
+
+
+# "station": {
+#             "hafasID": "8147",
+#             "longName": "Waldorfschule Mannheim",
+#             "shortName": "NRWA",
+#             "location": {
+#                 "lat": 49.4493147,
+#                 "long": 8.4730328,
+#                 "hash": "u0y12ccz5urh"
+#             },
+#             "hasVRNStops": false,
+#             "name": "Waldorfschule MA"
+#         }
