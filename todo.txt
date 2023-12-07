@@ -1,0 +1,10 @@
+(x) Latency per Station (absolute Verzögerung, relative Verzögerung)
+top 10 delays (not canceled)
+Latency per Place
+Latency per Hour
+Jorneys per Hour
+Stops per Line
+station with max Stops
+station with max Lines
+wie viele fahrten mit welcher linie
+wie viele tote lines ?
