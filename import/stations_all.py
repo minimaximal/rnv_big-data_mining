@@ -2,7 +2,7 @@ import json
 import pymysql
 
 # JSON-Daten laden
-f = open('/data/rnv_big-data_mining/data/general/stations_all_2023-12-06_18-12-33.json')
+f = open('/data/rnv_big-data_mining/data/general/stations_all_2023-12-10_20-43-46.json')
 data  = json.load(f)
 f.close()
 

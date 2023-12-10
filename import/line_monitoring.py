@@ -51,7 +51,6 @@ with open('/data/rnv_big-data_mining/data/line_monitoring/import.log', 'a') as f
 
 # loop through every file in the folder
 for filename in sorted_directory_listing_with_os_listdir(folder_path_2beimported):
-   tempvar = ""
 
    # check if file is a json file
    if filename.endswith('.json'):
@@ -166,8 +165,6 @@ for filename in sorted_directory_listing_with_os_listdir(folder_path_2beimported
                            cursor.execute("UPDATE stops SET api_realtimeDeparture = FROM_UNIXTIME(%s) WHERE id = %s", (rd, result[0]))
                            debug_stops_updated += 1
                      else:
-                        tempvar = line_id, journey_id, stop['plannedDeparture']['isoString'], stop['realtimeDeparture']['isoString'], stop['station']['id']
-
                         # check if station exists
                         cursor.execute("SELECT api_hafasID FROM stations WHERE api_hafasID = %s", stop['station']['id'])
                         result = cursor.fetchone()
@@ -205,7 +202,6 @@ for filename in sorted_directory_listing_with_os_listdir(folder_path_2beimported
          with open('/data/rnv_big-data_mining/data/line_monitoring/import.log', 'a') as f:
             f.write(f"{filename}; failed\n")   
 
-         print(tempvar)
 
 # close database connection
 db.close()
