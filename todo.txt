@@ -7,7 +7,11 @@
 (x) wie viele tote lines ?
 (x) wie viele toten stations ?
 (x) gesamten versptätungsminuten
-
+(x) delay per Hour
 
 delay per Place
-delay per Hour
+most canceled Lines
+
+check:
+delayperTime
+topStations
