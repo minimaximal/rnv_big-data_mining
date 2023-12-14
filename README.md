@@ -48,10 +48,19 @@ project repo for lecture big data mining and analytics
    -  shows the top 10 lines which have the with the most delays
    -  shows to the lines additionally the avarage delay per stop
 -  Geodata
+   -  diagramm: map
+   -  shows the stations on a map
+   -  the three main cities (LU, MA, HD) are marked with a diffrent color
+   -  the river rhine and neckar are marked
+   -  not interactive :( (but it would be possible @Kev, do it !!! xD)
 -  HeaviestDelays
    -  diagramm: bar
    -  shows the top 30 line journeys which have the biggest maximum delay for one stop (or more)
    -  shows to the lines additionally the number of affected stops
+-  MostCanceledLines
+   -  diagramm: bar
+   -  shows the top 10 lines which have the most canceled journeys
+   -  shows to the lines additionally the cancel rate of journeys
 -  MostLateLines
    -  diagramm: bar
    -  shows the top 10 lines which have the biggest maximum delay for one stop (or more)
@@ -73,6 +82,22 @@ project repo for lecture big data mining and analytics
       -  diagramm: bar
       -  shows the top 5 and low 5 lines with the most and least avarage stops per journey
       -  shows additional a global average over all lines and journeys
+-  TopPlaces
+   -  block 1
+      -  diagramm: bar (horizontal)
+      -  amount of stops per place (top 4)
+   -  block 2
+      -  diagramm: bar (horizontal)
+      -  amount of stops per place (after top 3)
+   -  block 3
+      -  diagramm: bar (horizontal)
+      -  amount of unique lines per place
+   -  block 4
+      -  diagramm: bar (horizontal)
+      -  total delay per place (top 4)
+   -  block 5
+      -  diagramm: bar (horizontal)
+      -  average delay per place (after top 3)
 -  TopStations
    -  block 1
       -  diagramm: bar

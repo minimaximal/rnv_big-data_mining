@@ -12,26 +12,13 @@
 (x) delay per Hour
 (x) stations per place
 (x) delay per Place
+(x) most canceled Lines
 
 
-most canceled Lines
 irgendwas mit Schulbussen
 
+map
+   -  the size of the marker is based on the number of stops
+   -  the color of the marker is based on the number of lines
 
 
-präsi anpassen
-
-
-Tori:
-ci von rnv
-   primär: #00254C
-   sekundär: #ED7200
-Beschriftungen
-   - Überschrift
-   - Achsenbeschriftungen (x und y) 
-      - Einheiten !!!
-         - in Klammern z.B. Verspätung (Minuten)
-   - Legende, wenn sinnvoll
-Kommentare auf Englisch
-Primär und Sekundär Anpassen (v.a. FrequentlyLateLines)
-bei Haltestellen: 45°, right und Plac - Name (Mannheim - MA Hauptbahnhof)
