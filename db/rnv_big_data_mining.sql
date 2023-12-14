@@ -1,22 +1,35 @@
+create table linegroups
+(
+    linegroup_id varchar(255) not null
+        primary key
+);
+
 create table `lines`
 (
     id                   int(10) auto_increment
         primary key,
     api_id               varchar(255) not null,
     api_destinationLabel varchar(255) null,
+    linegroup            varchar(255) null,
     constraint lines_pk
-        unique (api_id, api_destinationLabel)
+        unique (api_id, api_destinationLabel),
+    constraint lines_ibfk_1
+        foreign key (linegroup) references linegroups (linegroup_id)
 );
 
 create table journeys
 (
-    id       int(10) auto_increment
+    id                            int(10) auto_increment
         primary key,
-    api_line int        not null,
-    canceled tinyint(1) null,
+    api_line                      int        not null,
+    api_fistStop_plannedDeparture timestamp  not null,
+    api_canceled                  tinyint(1) null,
     constraint journeys_lines_id_fk
         foreign key (api_line) references `lines` (id)
 );
+
+create index linegroup
+    on `lines` (linegroup);
 
 create table stations
 (
