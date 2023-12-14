@@ -1,3 +1,5 @@
+(x) readme anpassen
+
 (x) delay per Station (absolute Verzögerung, relative Verzögerung)
 (x) top 10 delays (not canceled)
 (x) Stops per Line
@@ -9,9 +11,30 @@
 (x) gesamten versptätungsminuten
 (x) delay per Hour
 
+check:
+DelayPerTime
+TopStations
+
+
 delay per Place
 most canceled Lines
+irgendwas mit Schulbussen
 
-check:
-delayperTime
-topStations
+kev geo data
+
+präsi anpassen
+
+
+Tori:
+ci von rnv
+   primär: #00254C
+   sekundär: #ED7200
+Beschriftungen
+   - Überschrift
+   - Achsenbeschriftungen (x und y) 
+      - Einheiten !!!
+         - in Klammern z.B. Verspätung (Minuten)
+   - Legende, wenn sinnvoll
+Kommentare auf Englisch
+Primär und Sekundär Anpassen (v.a. FrequentlyLateLines)
+bei Haltestellen: 45°, right und Plac - Name (Mannheim - MA Hauptbahnhof)

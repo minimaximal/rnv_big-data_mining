@@ -1,2 +1,82 @@
 # rnv_big-data_mining
+
 project repo for lecture big data mining and analytics
+
+-  AvgDelayLines
+   -  diagramm: bar
+   -  shows the top 10 lines which have the biggest average delay
+   -  shows to the lines additionally the number of general delays
+-  DailyCanceledJourneys
+   -  diagramm: line
+   -  shows the number of canceled journeys per day in relation to the total number of journeys
+-  DailyDelayAmount
+   -  diagramm: line
+   -  shows the number of delayed stops per day in relation to the total number of stops
+-  DatasetStastitics
+   -  diagramm: display
+   -  shows diffrent basic statistics about the dataset
+      -  number of journeys
+      -  number of lines
+      -  number of linegroups
+      -  number of dead lines (line without any journeys)
+      -  number of stations
+      -  number of dead stations (station without any stops)
+      -  number of stops
+      -  total summed up delay over all stops
+-  DelayAlltime
+   -  diagramm: pie
+   -  show the distribution of punctual, delayed and canceled stops
+-  DelayCreatedPerStation
+   -  diagramm: bar
+   -  shows the top 10 stations which are creating the most delays
+-  DelayPerStation
+   -  block 1
+      -  diagramm: bar
+      -  shows the top 10 stations which have the biggest total summed up delays
+   -  block 2
+      -  diagramm: bar
+      -  shows the top 10 stations which have the biggest average delays
+-  DelayPerTime
+   -  block 1
+      -  diagramm: line
+      -  shows the created delays per day hour in days
+   -  block 2
+      -  diagramm: line
+      -  shows the created delay per day in days
+-  FrequentlyLateLines
+   -  diagramm: bar
+   -  shows the top 10 lines which have the with the most delays
+   -  shows to the lines additionally the avarage delay per stop
+-  Geodata
+-  HeaviestDelays
+   -  diagramm: bar
+   -  shows the top 30 line journeys which have the biggest maximum delay for one stop (or more)
+   -  shows to the lines additionally the number of affected stops
+-  MostLateLines
+   -  diagramm: bar
+   -  shows the top 10 lines which have the biggest maximum delay for one stop (or more)
+   -  shows to the lines additionally the number of general delays
+-  NullValues
+   -  diagramm: pie
+   -  shows the distribution of null values in the dataset
+      -  datasets which are ok (both times are not null or journey is canceled)
+      -  datasets which are not ok (both times are null)
+      -  datasets which are not ok (one time is null)
+-  TopLines
+   -  block 1
+      -  diagramm: bar
+      -  shows the top 10 line which have the most total stops
+   -  block 2
+      -  diagramm: bar
+      -  shows the top 10 lines which have the most journeys (without canceled journeys)
+   -  block 3
+      -  diagramm: bar
+      -  shows the top 5 and low 5 lines with the most and least avarage stops per journey
+      -  shows additional a global average over all lines and journeys
+-  TopStations
+   -  block 1
+      -  diagramm: bar
+      -  shows the top 10 stations which have the most total stops
+   -  block 2
+      -  diagramm: bar
+      -  shows the top 10 stations which have the most unique lines
