@@ -10,17 +10,14 @@
 (x) wie viele toten stations ?
 (x) gesamten versptätungsminuten
 (x) delay per Hour
-
-check:
-DelayPerTime
-TopStations
+(x) stations per place
+(x) delay per Place
 
 
-delay per Place
 most canceled Lines
 irgendwas mit Schulbussen
 
-kev geo data
+
 
 präsi anpassen
 
