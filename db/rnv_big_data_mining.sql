@@ -66,4 +66,3 @@ create table stops
     constraint stops_stations_api_hafasID_fk
         foreign key (api_station) references stations (api_hafasID)
 );
-

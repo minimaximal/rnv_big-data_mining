@@ -15,22 +15,25 @@ def dms_to_dd(dms):
 
 
 def convert_coordinates(csv_file):
-    # CSV-Datei lesen
+    # read csv file
     df = pd.read_csv(csv_file)
 
-    # Koordinaten in Dezimalgrad umwandeln
+    # convert coordinates from dms to dd
     df['Latitude'] = df['Latitude'].apply(dms_to_dd)
     df['Longitude'] = df['Longitude'].apply(dms_to_dd)
 
-    # sort nach latitude
+    # sort by latitude
     # df = df.sort_values(by=['Latitude'])
+
+    # sort by longitude
     df = df.sort_values(by=['Longitude'])
 
-    # Datenrahmen in ein Array von Tupeln umwandeln
+    # convert to list of tuples
     coordinates = list(df[['Longitude', 'Latitude']].itertuples(index=False, name=None))
 
     return coordinates
 
-# Testen Sie die Funktion mit einer CSV-Datei
+
+# main script call
 coordinates = convert_coordinates('/data/rnv_big-data_mining/analytics/Geodata/coordinates.csv')
 print(coordinates)

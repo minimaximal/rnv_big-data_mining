@@ -42,11 +42,11 @@ def add_linegroup_column():
 def create_linegroups():
    cursor = db.cursor()
 
-   # Zeilen aus der 'lines' Tabelle abrufen
+   # select all api_ids from the lines table
    cursor.execute("SELECT api_id FROM `lines`")
    rows = cursor.fetchall()
 
-   # Zeilen in die 'linegroups' Tabelle einfügen
+   # insert the linegroup_id into the linegroups table
    for row in rows:
       api_id = row[0]
       if "$" in api_id:
@@ -72,7 +72,8 @@ def create_linegroups():
    db.commit()
 
 
-
+# upper two functions are not needed anymore because the linegroups table is already created 
+# and the linegroup column is already added to the lines table in the general database creation script
 # create_linegroups_table()
 # add_linegroup_column()
 create_linegroups()

@@ -1,3 +1,9 @@
+# imports line monitoring data from JSON files into the database
+# the files are expected to be in the folder /data/rnv_big-data_mining/data/line_monitoring/to_be_imported
+# the files are moved to /data/rnv_big-data_mining/data/line_monitoring/imported after successful import
+# the files are moved to /data/rnv_big-data_mining/data/line_monitoring/import_failed after failed import
+# the import log is written to /data/rnv_big-data_mining/data/line_monitoring/import.log
+
 import json
 import traceback
 import pymysql
@@ -6,30 +12,17 @@ from datetime import datetime, timezone
 import shutil
 
 
+# function to sort the directory listing by filename for correct import order
 def sorted_directory_listing_with_os_listdir(directory):
     items = os.listdir(directory)
     sorted_items = sorted(items)
     return sorted_items
 
-"""
-Imports line monitoring data from JSON files into a database.
-
-This function connects to a MySQL database, reads JSON files from a specified folder,
-and imports the data into the database. It logs the import process and handles errors.
-
-Args:
-   None
-
-Returns:
-   None
-"""
-
-
 
 # connect to database
 db = pymysql.connect(host="localhost", user="rnv_importer", password="rnv_importer", database="rnv_big_data_mining")
 
-# create cursor
+# create a db cursor
 cursor = db.cursor()
 
 # folder with files to be imported
@@ -58,7 +51,7 @@ for filename in sorted_directory_listing_with_os_listdir(folder_path_2beimported
       file_path = os.path.join(folder_path_2beimported, filename)
 
       try:
-            # open the file
+         # open the file
          with open(file_path) as f:
             data = json.load(f)
 
@@ -185,9 +178,9 @@ for filename in sorted_directory_listing_with_os_listdir(folder_path_2beimported
          # write debug information to log file
          with open('/data/rnv_big-data_mining/data/line_monitoring/import.log', 'a') as f:
             f.write(f"{filename}; imported; {debug_lines_total}; {debug_lines_updated}; {debug_lines_new}; {debug_journeys_total}; {debug_journeys_updated}; {debug_journeys_new}; {debug_stops_total}; {debug_stops_updated}; {debug_stops_new}\n")   
-
-      except:
-         # error handling
+   
+      # error handling
+      except:   
          shutil.move(file_path, os.path.join(folder_path_failed, filename))
 
          # write traceback to error file

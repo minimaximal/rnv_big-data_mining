@@ -15,7 +15,7 @@ headers = {
   'Content-Type': 'application/json'
 }
 
-# Get the current timestamp
+# get the current timestamp
 now = datetime.datetime.now()
 
 cursor = "0"
@@ -28,7 +28,8 @@ while cursor != "999-X" and cursor != "null":
    with open('/data/rnv_big-data_mining/data/line_monitoring/mined/' + filename, 'w') as f:
       f.write(response.text)
 
-   with open('/data/rnv_big-data_mining/data/line_monitoring/to_be_imported/' + filename, 'w') as f:
-      f.write(response.text)
+   # outcommented for clean data cut for presentation
+   # with open('/data/rnv_big-data_mining/data/line_monitoring/to_be_imported/' + filename, 'w') as f:
+   #    f.write(response.text)
 
    cursor = json.loads(response.text)['data']['lines']['cursor']

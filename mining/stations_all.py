@@ -16,7 +16,7 @@ headers = {
   'Content-Type': 'application/json'
 }
 
-# Get the current timestamp
+# get the current timestamp
 now = datetime.datetime.now()
 
 response = requests.request("POST", url, headers=headers, data=payload)

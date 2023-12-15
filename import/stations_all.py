@@ -1,19 +1,19 @@
 import json
 import pymysql
 
-# JSON-Daten laden
+# load the JSON data
 f = open('/data/rnv_big-data_mining/data/general/stations_all_2023-12-10_20-43-46.json')
 data  = json.load(f)
 f.close()
 
 
-# Verbindung zur MariaDB-Datenbank herstellen
+# create a database connection
 db = pymysql.connect(host="localhost", user="rnv_importer", password="rnv_importer", database="rnv_big_data_mining")
 
-# Cursor erstellen
+# create a db cursor
 cursor = db.cursor()
 
-# Über die JSON-Daten iterieren und jede Station in die Datenbank einfügen
+# iterate over the stations and insert them into the database
 for station in data['data']['stations']['elements']:
     cursor.execute("""
         INSERT INTO stations 
@@ -32,13 +32,16 @@ for station in data['data']['stations']['elements']:
         station['hasVRNStops']
     ))
 
-# Änderungen speichern
+# commit the changes
 db.commit()
 
-# Verbindung schließen
+# close the db connection
 db.close()
 
 
+# example station for json structure reference
+# this station is not outputted in the station_all mining but appears in the line_monitoring mining
+# manuell direct query of the hafasID to get the full station data
 
 # "station": {
 #             "hafasID": "8147",
